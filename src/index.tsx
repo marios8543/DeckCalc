@@ -1,105 +1,73 @@
 import {
-  ButtonItem,
+  Button,
   definePlugin,
-  DialogButton,
-  Menu,
-  MenuItem,
-  PanelSection,
-  PanelSectionRow,
-  Router,
   ServerAPI,
-  showContextMenu,
   staticClasses,
 } from "decky-frontend-lib";
-import { VFC } from "react";
-import { FaShip } from "react-icons/fa";
+import { useState, VFC } from "react";
+import { FaCalculator } from "react-icons/fa";
+import isNumber from "is-number";
 
-import logo from "../assets/logo.png";
 
-// interface AddMethodArgs {
-//   left: number;
-//   right: number;
-// }
+const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
+  let [result, setResult] = useState("");
 
-const Content: VFC<{ serverAPI: ServerAPI }> = ({serverAPI}) => {
-  // const [result, setResult] = useState<number | undefined>();
+  const clear = () => {
+    setResult("");
+  }
+  const backSpace = () => {
+    setResult(result.slice(0, result.length - 1))
+  }
 
-  // const onClick = async () => {
-  //   const result = await serverAPI.callPluginMethod<AddMethodArgs, number>(
-  //     "add",
-  //     {
-  //       left: 2,
-  //       right: 2,
-  //     }
-  //   );
-  //   if (result.success) {
-  //     setResult(result.result);
-  //   }
-  // };
+  const calculate = () => {
+    try {
+      result = eval(result).toString()
+      if (result.includes('.')) {
+        let r = Number.parseFloat(result);
+        r = + eval(result);
+        setResult(r.toFixed(4).toString());
+      } else {
+        setResult(eval(result).toString());
+      }
 
+    } catch (err) {
+      setResult("Error");
+    }
+
+  }
   return (
-    <PanelSection title="Panel Section">
-      <PanelSectionRow>
-        <ButtonItem
-          layout="below"
-          onClick={(e) =>
-            showContextMenu(
-              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
-                <MenuItem onSelected={() => {}}>Item #1</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #2</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #3</MenuItem>
-              </Menu>,
-              e.currentTarget ?? window
-            )
-          }
-        >
-          Server says yolo
-        </ButtonItem>
-      </PanelSectionRow>
-
-      <PanelSectionRow>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <img src={logo} />
-        </div>
-      </PanelSectionRow>
-
-      <PanelSectionRow>
-        <ButtonItem
-          layout="below"
-          onClick={() => {
-            Router.CloseSideMenus();
-            Router.Navigate("/decky-plugin-test");
-          }}
-        >
-          Router
-        </ButtonItem>
-      </PanelSectionRow>
-    </PanelSection>
-  );
-};
-
-const DeckyPluginRouterTest: VFC = () => {
-  return (
-    <div style={{ marginTop: "50px", color: "white" }}>
-      Hello World!
-      <DialogButton onClick={() => Router.NavigateToLibraryTab()}>
-        Go to Library
-      </DialogButton>
+    <div>
+      <input style={{ backgroundColor: 'transparent', width: '100%', 'color': 'white', fontSize: 'xx-large' }} type="text" value={result} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: 'minmax(60px, auto)' }}>
+        <Button onClick={clear} style={{ gridColumn: '1/3', gridRow: '1', backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }}>Clear</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={backSpace}>C</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat(isNumber(result.charAt(result.length-1)) ? "/" : "")) }}>/</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("7")) }}>7</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("8")) }}>8</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("9")) }}>9</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat(isNumber(result.charAt(result.length-1)) ? "*": "")) }}>*</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("4")) }}>4</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("5")) }}>5</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("6")) }}>6</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat(isNumber(result.charAt(result.length-1)) ? "-": "")) }}>-</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("1")) }}>1</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("2")) }}>2</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("3")) }}>3</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat(isNumber(result.charAt(result.length-1)) ? "+" : "")) }}>+</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat("0")) }}>0</Button>
+        <Button style={{ backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }} onClick={(_: any) => { setResult(result.concat(isNumber(result.charAt(result.length-1)) ? ".": "")) }}>.</Button>
+        <Button onClick={calculate} style={{ gridColumn: '3/5', gridRow: '5', backgroundColor: 'transparent', color: 'white', fontSize: 'larger' }}>=</Button>
+      </div>
     </div>
-  );
-};
+  )
+}
 
 export default definePlugin((serverApi: ServerAPI) => {
-  serverApi.routerHook.addRoute("/decky-plugin-test", DeckyPluginRouterTest, {
-    exact: true,
-  });
-
   return {
-    title: <div className={staticClasses.Title}>Example Plugin</div>,
+    title: <div className={staticClasses.Title}>Calculator</div>,
     content: <Content serverAPI={serverApi} />,
-    icon: <FaShip />,
+    icon: <FaCalculator />,
     onDismount() {
-      serverApi.routerHook.removeRoute("/decky-plugin-test");
     },
   };
 });
